@@ -5,15 +5,12 @@
 
 <nav class="navbar navbar-expand-lg navbar-custom" id="site-navbar">
     <div class="container">
-
-        <!-- Logo -->
-        <a class="navbar-brand" href="{{ $homeUrl }}">
+        <a class="navbar-brand" href="{{ $homeUrl }}" aria-label="Freelance-Job home">
             <img src="{{ asset('assets/logo1.png') }}" alt="Freelance-Job logo" class="logo-img" />
         </a>
 
-        <!-- TOGGLER (FIXED) -->
         <button
-            class="navbar-toggler bg-warning"
+            class="navbar-toggler"
             type="button"
             data-bs-toggle="collapse"
             data-bs-target="#main-nav"
@@ -24,54 +21,37 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- MENU -->
-        <div >
-
-            <div class="nav ms-auto align-items-center nav-wrapper">
-                <nav >
-
-                
-                <a href="{{ route('home')}}"
-                   class="nav-link-custom {{ $routeName === 'home' ? 'active' : '' }}">
+        <div class="collapse navbar-collapse" id="main-nav">
+            <div class="navbar-nav ms-auto align-items-lg-center nav-wrapper">
+                <a href="{{ route('home') }}" class="nav-link-custom {{ $routeName === 'home' ? 'active' : '' }}">
                     Home
                 </a>
 
-                <a href="{{ request()->routeIs('home') ? '#services' : $homeUrl . '#services' }}"
-                   class="nav-link-custom">
+                <a href="{{ request()->routeIs('home') ? '#services' : $homeUrl . '#services' }}" class="nav-link-custom">
                     Services
                 </a>
 
-                <a href="{{ route('about') }}"
-                   class="nav-link-custom {{ $routeName === 'about' ? 'active' : '' }}">
+                <a href="{{ route('about') }}" class="nav-link-custom {{ $routeName === 'about' ? 'active' : '' }}">
                     About
                 </a>
 
-                <a href="{{ request()->routeIs('home') ? '#howitworks' : route('contact') }}"
-                   class="nav-link-custom {{ $routeName === 'contact' ? 'active' : '' }}">
+                <a href="{{ route('contact') }}" class="nav-link-custom {{ $routeName === 'contact' ? 'active' : '' }}">
                     Contact
                 </a>
-                </nav>
-                <!-- Search -->
-                <div class="search-container">
-                    <input type="text" placeholder="Search services..." class="search-input">
-                </div>
 
-                <!-- Theme -->
-                <button id="theme-toggle-btn" class="theme-toggle-btn" type="button" title="Switch Theme">
-                    <span class="theme-toggle-track">
-                        <span class="theme-toggle-thumb" data-theme-thumb>🌙</span>
-                    </span>
-                    <span class="theme-toggle-label" data-theme-label>Dark</span>
-                </button>
+                <form class="search-container" role="search" action="{{ route('providers') }}" method="GET">
+                    <span class="search-icon" aria-hidden="true">Search</span>
+                    <input type="search" name="q" placeholder="Search services..." class="search-input" />
+                </form>
 
-                <!-- AUTH -->
-
-                    <div class="nav-user-card">
-                    </div>
-                    <a href="{{ route('login') }}" class="login-btn">
+                <div class="d-flex align-items-center gap-2 nav-auth-actions">
+                    <a href="{{ route('login') }}" class="login-btn text-decoration-none">
                         Login
                     </a>
-
+                    <a href="{{ route('sign') }}" class="signup-btn text-decoration-none">
+                        Sign Up
+                    </a>
+                </div>
             </div>
         </div>
     </div>

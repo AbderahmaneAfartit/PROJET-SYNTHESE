@@ -5,12 +5,6 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ $title }}</title>
-    <script>
-        (() => {
-            const storedTheme = localStorage.getItem('pff-theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', storedTheme);
-        })();
-    </script>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 <body data-route="{{ request()->route()?->getName() }}" data-bs-spy="scroll" data-bs-target="#site-navbar" data-bs-offset="100">

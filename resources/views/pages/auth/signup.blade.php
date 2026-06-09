@@ -1,46 +1,82 @@
 <x-layouts.app title="Sign Up | Freelance-Job">
     @php
-        $selectedJobs = collect(old('jobs', []))->filter()->values()->all();
-        $isTravailleur = old('travailleur');
+        $hasSignupPost = \Illuminate\Support\Facades\Route::has('signup.store');
+        $signupAction = $hasSignupPost ? route('signup.store') : route('sign');
+        $signupMethod = $hasSignupPost ? 'POST' : 'GET';
+        $selectedJobs = collect(old('jobs', request('jobs', [])))->filter()->values();
+        $isTravailleur = old('travailleur') || request()->boolean('travailleur');
+        $suggestedJobs = $availableJobs ?? [
+            'Laravel backend developer',
+            'React landing page',
+            'Logo redesign',
+            'WordPress website setup',
+            'SEO content writer',
+        ];
     @endphp
 
     <div class="login-page signup-page">
         <div class="login-blob login-blob-1"></div>
         <div class="login-blob login-blob-2"></div>
-        <div class="global-grid-overlay" style="opacity: 0.4"></div>
 
         <div class="login-split-container signup-split-container">
-            <div class="reveal-left login-info-side active" data-reveal>
+            <div class="login-info-side reveal-left active">
                 <div class="info-content">
                     <a href="{{ route('home') }}" class="login-logo-small">
                         Freelance<span>-Job</span>
                     </a>
                     <h2 class="info-title">Create your <span class="text-gold">workspace</span>.</h2>
                     <p class="info-paragraph">
-                        Register as a client, or check travailleur to add jobs immediately and become a ManJobs account.
+                        Register as a client, or choose the worker option to list the jobs connected to your account.
                     </p>
                     <ul class="info-features">
-                        <li><span class="feature-dot"></span> Roles: admin, client, ManJobs</li>
-                        <li><span class="feature-dot"></span> Jobs linked to the account</li>
-                        <li><span class="feature-dot"></span> Laravel powered signup</li>
+                        <li><span class="feature-dot"></span> Client and ManJobs accounts</li>
+                        <li><span class="feature-dot"></span> Job titles linked to worker profiles</li>
+                        <li><span class="feature-dot"></span> Built for Laravel authentication</li>
                     </ul>
                 </div>
+
                 <div class="info-footer">
                     <p>Already have an account?</p>
                     <a href="{{ route('login') }}" class="btn-signup-link">
-                        Sign in <span>→</span>
+                        Sign in
                     </a>
                 </div>
             </div>
 
-            <div class="reveal-right login-form-side active" data-reveal>
+            <div class="login-form-side reveal-right active">
                 <div class="login-card-compact signup-card">
                     <div class="card-header">
                         <h3 class="login-main-title">Sign Up</h3>
                     </div>
 
-                    {{-- <form class="login-form" method="POST" action="{{ route('signup.store') }}"> --}}
-                        @csrf
+                    @if (session('success'))
+                        <div class="alert alert-success" role="alert">{{ session('success') }}</div>
+                    @endif
+
+                    @if (session('status'))
+                        <div class="alert alert-info" role="alert">{{ session('status') }}</div>
+                    @endif
+
+                    @if (session('error'))
+                        <div class="alert alert-danger" role="alert">{{ session('error') }}</div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Please fix the highlighted fields.</strong>
+                            <ul class="mb-0 mt-2 ps-3">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+                    <form class="login-form signup-form" method="{{ $signupMethod }}" action="{{ $signupAction }}" novalidate>
+                        @if ($hasSignupPost)
+                            @csrf
+                        @endif
+
                         <div class="form-group">
                             <label for="name">Full name</label>
                             <div class="input-wrapper">
@@ -50,12 +86,14 @@
                                     id="name"
                                     name="name"
                                     placeholder="Your full name"
-                                    value="{{ old('name') }}"
+                                    value="{{ old('name', request('name')) }}"
+                                    class="@error('name') is-invalid @enderror"
+                                    autocomplete="name"
                                     required
                                 />
                             </div>
                             @error('name')
-                                <div class="login-error">{{ $message }}</div>
+                                <div class="login-error" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
 
@@ -68,99 +106,102 @@
                                     id="signup-email"
                                     name="email"
                                     placeholder="you@example.com"
-                                    value="{{ old('email') }}"
+                                    value="{{ old('email', request('email')) }}"
+                                    class="@error('email') is-invalid @enderror"
+                                    autocomplete="email"
                                     required
                                 />
                             </div>
                             @error('email')
-                                <div class="login-error">{{ $message }}</div>
+                                <div class="login-error" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="signup-password">Password</label>
                             <div class="input-wrapper">
-                                <span class="input-icon">•</span>
+                                <span class="input-icon">*</span>
                                 <input
                                     type="password"
                                     id="signup-password"
                                     name="password"
                                     placeholder="Minimum 8 characters"
+                                    class="@error('password') is-invalid @enderror"
+                                    autocomplete="new-password"
                                     required
                                 />
                             </div>
                             @error('password')
-                                <div class="login-error">{{ $message }}</div>
+                                <div class="login-error" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <div class="form-group">
                             <label for="confirm-password">Confirm password</label>
                             <div class="input-wrapper">
-                                <span class="input-icon">•</span>
+                                <span class="input-icon">*</span>
                                 <input
                                     type="password"
                                     id="confirm-password"
                                     name="password_confirmation"
                                     placeholder="Repeat password"
+                                    autocomplete="new-password"
                                     required
                                 />
                             </div>
                         </div>
 
-                        <label class="checkbox-container signup-checkbox">
-                            <input
-                                type="checkbox"
-                                name="travailleur"
-                                value="1"
-                                @checked($isTravailleur)
-                                data-travailleur-toggle
-                            />
-                            <span class="checkmark"></span>
-                            travailleur
-                        </label>
+                        <div class="signup-worker-block">
+                            <label class="checkbox-container signup-checkbox">
+                                <input
+                                    type="checkbox"
+                                    name="travailleur"
+                                    value="1"
+                                    @checked($isTravailleur)
+                                    class="signup-worker-toggle"
+                                />
+                                <span class="checkmark"></span>
+                                Register as a worker
+                            </label>
 
-                        <div class="signup-jobs" data-jobs-panel @if (! $isTravailleur) style="display: none;" @endif>
-                            <div class="signup-jobs-header">
-                                <span>Jobs to add</span>
-                            </div>
+                            <div class="signup-jobs">
+                                <div class="signup-jobs-header">
+                                    <span>Jobs to add</span>
+                                </div>
 
-                            <div class="signup-job-row">
-                                {{-- <select data-job-select aria-label="Choose job">
-                                    <option value="">Choose a job...</option>
-                                    @foreach ($availableJobs as $job)
-                                        <option value="{{ $job }}">{{ $job }}</option>
+                                <div class="signup-suggestions">
+                                    @foreach ($suggestedJobs as $job)
+                                        <span>{{ $job }}</span>
                                     @endforeach
-                                    <option value="__custom__">Job not listed</option>
-                                </select> --}}
-                                <button type="button" data-job-add aria-label="Add job">+</button>
+                                </div>
+
+                                @for ($i = 0; $i < 3; $i++)
+                                    <div class="form-group mb-0">
+                                        <label for="job-{{ $i + 1 }}">Job {{ $i + 1 }}</label>
+                                        <div class="input-wrapper">
+                                            <span class="input-icon">#</span>
+                                            <input
+                                                type="text"
+                                                id="job-{{ $i + 1 }}"
+                                                name="jobs[]"
+                                                placeholder="Example: Plumber"
+                                                value="{{ $selectedJobs->get($i) }}"
+                                                class="@error('jobs.' . $i) is-invalid @enderror"
+                                            />
+                                        </div>
+                                        @error('jobs.' . $i)
+                                            <div class="login-error" role="alert">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                @endfor
                             </div>
-
-                            <div class="signup-custom-job" data-custom-job-wrap style="display: none;">
-                                <input type="text" placeholder="Write the job title" data-custom-job-input />
-                            </div>
-
-                            <div class="signup-selected-jobs" data-selected-jobs></div>
-                            {{-- <div data-hidden-jobs>
-                                @foreach ($selectedJobs as $job)
-                                    <input type="hidden" name="jobs[]" value="{{ $job }}">
-                                @endforeach
-                            </div>
-
-                            @error('jobs.0')
-                                <div class="login-error">{{ $message }}</div>
-                            @enderror
-                        </div> --}}
-
-                        <script type="application/json" id="signup-jobs-data">
-                            @json($selectedJobs)
-                        </script>
+                        </div>
 
                         @if ($errors->has('form'))
-                            <div class="login-error">{{ $errors->first('form') }}</div>
+                            <div class="login-error" role="alert">{{ $errors->first('form') }}</div>
                         @endif
 
-                        <button type="submit" class="login-submit-btn">Create Account</button>
+                        <button type="submit" class="login-submit-btn">Create account</button>
                     </form>
                 </div>
             </div>

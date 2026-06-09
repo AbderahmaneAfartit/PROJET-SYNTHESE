@@ -63,6 +63,25 @@
     box-shadow 0.3s ease;
 }
 
+.navbar-custom .container {
+  position: relative;
+  z-index: 1;
+}
+
+.navbar-custom .navbar-toggler {
+  border: 1px solid rgba(16, 185, 129, 0.45);
+  border-radius: 8px;
+  padding: 8px 10px;
+}
+
+.navbar-custom .navbar-toggler:focus {
+  box-shadow: 0 0 0 4px var(--emerald-glow);
+}
+
+.navbar-custom .navbar-toggler-icon {
+  filter: invert(1);
+}
+
 .logo-img {
   height: 42px;
   transition: transform 0.3s ease;
@@ -75,8 +94,12 @@
   text-decoration: none !important;
 }
 
+.nav-wrapper {
+  gap: 14px;
+}
+
 .nav-wrapper > * {
-  margin-left: 22px;
+  margin-left: 0;
 }
 
 .nav-link-custom {
@@ -111,7 +134,7 @@
   position: relative;
   display: flex;
   align-items: center;
-  width: 40px;
+  width: 48px;
   height: 38px;
   border: 1px solid rgba(16, 185, 129, 0.5);
   border-radius: 20px;
@@ -122,17 +145,29 @@
   cursor: pointer;
   background-color: transparent;
 }
+
+.search-icon {
+  width: 18px;
+  overflow: hidden;
+  white-space: nowrap;
+  color: transparent;
+  margin-left: 12px;
+}
+
+.search-icon::before {
+  content: "";
+  display: block;
+  width: 15px;
+  height: 15px;
+  border: 2px solid var(--emerald);
+  border-radius: 50%;
+  box-shadow: 8px 8px 0 -6px var(--emerald);
+  transform: rotate(-10deg);
+}
 .search-container:focus-within,
 .search-container:hover {
   width: 210px;
   border-color: var(--emerald);
-}
-.search-icon {
-  color: var(--emerald);
-  margin-left: 12px;
-  font-size: 15px;
-  flex-shrink: 0;
-  transition: color 0.2s;
 }
 .search-input {
   border: none;
@@ -276,20 +311,38 @@
 }
 
 @media (max-width: 991px) {
+  .navbar-collapse {
+    padding-top: 18px;
+  }
+
+  .nav-wrapper {
+    align-items: stretch !important;
+  }
+
   .nav-wrapper > * {
     margin-left: 0;
     margin-top: 10px;
   }
-  .search-container.active {
-    width: 100%;
-  }
+
   .search-container {
     width: 100%;
     border-radius: 25px;
   }
+
   .search-input {
     opacity: 1;
   }
+
+  .nav-auth-actions {
+    width: 100%;
+  }
+
+  .nav-auth-actions .login-btn,
+  .nav-auth-actions .signup-btn {
+    flex: 1;
+    text-align: center;
+  }
+
   .nav-user-card {
     width: 100%;
     grid-template-columns: 34px minmax(0, 1fr) 34px;

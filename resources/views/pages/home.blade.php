@@ -1,23 +1,20 @@
 <x-layouts.app title="Freelance-Job">
     <main>
-        <div class="reveal-zoom" data-reveal>
-            <div id="hero" class="relative w-full min-h-[640px] flex flex-col items-center justify-center overflow-hidden mb-12">
+        <div class="reveal-zoom active">
+            <div id="hero" class="hero-section">
                 <video
                     src="{{ asset('assets/video.mp4') }}"
                     autoplay
                     loop
                     muted
                     playsinline
-                    class="absolute inset-0 w-full h-full object-cover"
+                    class="hero-video"
                 ></video>
 
-                <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/80"></div>
-                <div
-                    class="absolute bottom-0 left-0 right-0 h-32"
-                    style="background: linear-gradient(to top, rgba(212,175,55,0.08), transparent)"
-                ></div>
+                <div class="hero-shade"></div>
+                <div class="hero-bottom-glow"></div>
 
-                <div class="relative z-20 flex flex-col items-center text-center px-4 w-full max-w-3xl">
+                <div class="hero-content">
                     <div class="hero-badge">
                         <span class="hero-badge-dot"></span>
                         Trusted by 50,000+ clients worldwide
@@ -41,7 +38,6 @@
                             type="text"
                             placeholder="What service are you looking for?"
                             class="hero-search-input"
-                            data-hero-query
                         />
                         <button class="hero-search-btn" type="button">Search</button>
                     </div>
@@ -52,7 +48,6 @@
                             <button
                                 type="button"
                                 class="hero-pill"
-                                data-hero-pill="{{ $category }}"
                             >
                                 {{ $category }}
                             </button>
@@ -71,7 +66,7 @@
             </div>
         </div>
 
-        <div class="reveal" data-reveal style="transition-delay: 100ms;">
+        <div class="reveal active" style="transition-delay: 100ms;">
             <section id="services" class="services-section">
                 <div class="services-container">
                     <div class="services-header">
@@ -105,7 +100,7 @@
             </section>
         </div>
 
-        <div class="reveal" data-reveal style="transition-delay: 150ms;">
+        <div class="reveal active" style="transition-delay: 150ms;">
             <section
                 id="about-preview"
                 class="about-preview-section"
@@ -125,7 +120,7 @@
             </section>
         </div>
 
-        <div class="reveal" data-reveal style="transition-delay: 200ms;">
+        <div class="reveal active" style="transition-delay: 200ms;">
             <section id="howitworks" class="hiw-section">
                 <div class="hiw-container">
                     <div class="hiw-header">

@@ -4,7 +4,7 @@
         <div class="about-bg-blob about-bg-blob-2"></div>
 
         <section class="about-hero">
-            <div class="about-section about-hero-inner" data-reveal>
+            <div class="about-section about-hero-inner is-visible">
                 <span class="about-eyebrow">Who We Are</span>
                 <h1 class="about-h1">
                     The platform that connects <br />
@@ -17,7 +17,7 @@
                 </div>
             </div>
 
-            <div class="about-section about-professions-grid" data-reveal style="transition-delay: 150ms;">
+            <div class="about-section about-professions-grid is-visible" style="transition-delay: 150ms;">
                 @foreach ($professions as $index => $profession)
                     <div class="about-profession-card" style="animation-delay: {{ $index * 0.05 }}s">
                         <div class="prof-card-icon">{{ $profession['icon'] }}</div>
@@ -29,7 +29,7 @@
         </section>
 
         <section class="about-mission-section">
-            <div class="about-section about-mission-grid" data-reveal>
+            <div class="about-section about-mission-grid is-visible">
                 <div class="about-mission-left">
                     <span class="about-eyebrow">Our Mission</span>
                     <h2 class="about-h2">
@@ -80,7 +80,7 @@
                 @foreach ($stats as $stat)
                     <div class="stat-card">
                         <div class="stat-value">
-                            <span data-counter data-target="{{ $stat['value'] }}" data-suffix="{{ $stat['suffix'] }}">0{{ $stat['suffix'] }}</span>
+                            <span>{{ number_format($stat['value']) }}{{ $stat['suffix'] }}</span>
                         </div>
                         <div class="stat-label">{{ $stat['label'] }}</div>
                     </div>
@@ -89,7 +89,7 @@
         </section>
 
         <section class="about-trust-section">
-            <div class="about-section" data-reveal>
+            <div class="about-section is-visible">
                 <div class="about-section-head">
                     <span class="about-eyebrow">Why Trust Us</span>
                     <h2 class="about-h2">Built on safety & transparency</h2>
@@ -116,7 +116,7 @@
         </section>
 
         <section class="about-hiw-section" id="about-process">
-            <div class="about-section" data-reveal>
+            <div class="about-section is-visible">
                 <div class="about-section-head">
                     <span class="about-eyebrow">The Process</span>
                     <h2 class="about-h2">Four steps to get it done</h2>
@@ -141,7 +141,7 @@
         </section>
 
         <section class="about-values-section">
-            <div class="about-section" data-reveal>
+            <div class="about-section is-visible">
                 <div class="about-section-head">
                     <span class="about-eyebrow">Our Core Values</span>
                     <h2 class="about-h2">What drives us every day</h2>
@@ -159,11 +159,11 @@
         </section>
 
         <section class="about-cta-section">
-            <div class="about-section about-cta-inner" data-reveal>
+            <div class="about-section about-cta-inner is-visible">
                 <h2 class="about-cta-title">Ready to get started?</h2>
                 <p class="about-cta-sub">Join 85,000+ clients who trust Freelance-Job to get quality work done.</p>
                 <div class="about-hero-cta-row justify-content-center">
-                    <a href="{{ route('signup') }}" class="about-btn-primary text-decoration-none">Post a Job Free</a>
+                    <a href="{{ route('sign') }}" class="about-btn-primary text-decoration-none">Post a Job Free</a>
                     <a href="{{ route('providers') }}" class="about-btn-ghost text-decoration-none">Browse Freelancers →</a>
                 </div>
             </div>

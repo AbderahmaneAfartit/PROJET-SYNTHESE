@@ -31,7 +31,7 @@
             <div class="contact-blob contact-blob-1"></div>
             <div class="contact-blob contact-blob-2"></div>
 
-            <div class="reveal contact-hero active" data-reveal>
+            <div class="reveal contact-hero active is-visible">
                 <span class="contact-eyebrow">Assistance & Support</span>
                 <h1 class="contact-heading">
                     On est là pour <br />
@@ -44,7 +44,7 @@
             </div>
 
             <div class="contact-layout">
-                <div class="reveal-left contact-info active" data-reveal>
+                <div class="reveal-left contact-info active is-visible">
                     <div class="info-card">
                         <div class="info-card-icon">📬</div>
                         <div>
@@ -78,7 +78,7 @@
                     @endforeach
                 </div>
 
-                <div class="reveal-right contact-form-wrap active" data-reveal>
+                <div class="reveal-right contact-form-wrap active is-visible">
                     <form method="POST" action="{{ route('contact.send') }}" novalidate>
                         @csrf
                         <div class="field-group {{ $errors->has('name') ? 'field-error' : '' }}">
@@ -142,7 +142,7 @@
                                         <path d="M4 6h12M4 10h8M4 14h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
                                     </svg>
                                 </span>
-                                <select class="field-input field-select" name="subject" data-contact-subject>
+                                <select class="field-input field-select" name="subject">
                                     @foreach ($subjects as $subject)
                                         <option value="{{ $subject['value'] }}" @selected($selectedSubject === $subject['value'])>
                                             {{ $subject['label'] }}
@@ -157,27 +157,21 @@
 
                         <div
                             class="subject-hint"
-                            data-contact-hint
                             @if (! $meta) style="display: none;" @else style="--hint-color: {{ $meta['color'] }};" @endif
                         >
                             <span
                                 class="subject-hint-dot"
-                                data-contact-hint-dot
                                 @if ($meta) style="background: {{ $meta['color'] }};" @endif
                             ></span>
-                            <span data-contact-hint-text>{{ $meta['hint'] ?? '' }}</span>
+                            <span>{{ $meta['hint'] ?? '' }}</span>
                         </div>
-
-                        <script type="application/json" id="contact-subject-meta">
-                            @json($subjectMeta)
-                        </script>
 
                         <div class="field-group {{ $errors->has('message') ? 'field-error' : '' }}">
                             <label class="field-label" style="display: flex; justify-content: space-between">
                                 <span>
                                     Message <span class="field-required">*</span>
                                 </span>
-                                <span class="char-count"><span data-message-count>{{ mb_strlen(old('message', '')) }}</span> / 1000</span>
+                                <span class="char-count">{{ mb_strlen(old('message', '')) }} / 1000</span>
                             </label>
                             <textarea
                                 class="field-textarea"
@@ -185,7 +179,6 @@
                                 placeholder="Décrivez votre situation en détail..."
                                 maxlength="1000"
                                 rows="6"
-                                data-message-input
                             >{{ old('message') }}</textarea>
                             @error('message')
                                 <span class="field-err-msg">{{ $message }}</span>

@@ -8,7 +8,7 @@
 }
 
 .signup-card {
-  max-width: 390px;
+  max-width: 430px;
 }
 
 .login-error {
@@ -25,14 +25,30 @@
   font-weight: 700;
 }
 
-.signup-jobs {
+.signup-worker-block {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.signup-jobs {
+  display: none;
   flex-direction: column;
   gap: 10px;
   padding: 14px;
   border: 1px solid var(--border-faint);
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.03);
+}
+
+.signup-worker-toggle:checked ~ .checkmark {
+  background: var(--emerald);
+  border-color: var(--emerald);
+}
+
+.signup-checkbox:has(.signup-worker-toggle:checked) + .signup-jobs {
+  display: flex;
+  animation: hintFadeIn 0.25s ease both;
 }
 
 .signup-jobs-header {
@@ -87,6 +103,22 @@
   color: #111827;
 }
 
+.signup-suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.signup-suggestions span {
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: 999px;
+  padding: 6px 10px;
+  color: var(--text-light);
+  background: rgba(16, 185, 129, 0.08);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
 .signup-selected-jobs {
   display: flex;
   flex-wrap: wrap;
@@ -106,4 +138,14 @@
   font-size: 0.82rem;
   font-weight: 700;
   cursor: pointer;
+}
+
+@media (max-width: 900px) {
+  .signup-card {
+    max-width: 100%;
+  }
+
+  .signup-split-container {
+    min-height: auto;
+  }
 }
