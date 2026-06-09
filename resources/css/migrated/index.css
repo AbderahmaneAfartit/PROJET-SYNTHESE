@@ -103,7 +103,11 @@ nav,
 .about-mission-section,
 .about-stats-section,
 .about-hiw-section,
-.about-cta-section {
+.about-cta-section,
+.posts-page,
+.ajout-post-page,
+.post-card,
+.ajout-form-card {
   transition:
     background-color 0.35s ease,
     border-color 0.35s ease,
@@ -116,6 +120,7 @@ body {
   background-color: var(--bg-dark);
   color: var(--text-main);
   position: relative;
+  overflow-x: hidden;
 }
 
 /* Global Grid Overlay */

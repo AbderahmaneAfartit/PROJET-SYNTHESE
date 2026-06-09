@@ -22,11 +22,11 @@ class DatabaseSeeder extends Seeder
 
         // Seed Services
         $servicesData = [
-            ['name' => 'Développement Web', 'description' => 'Création de sites et applications web', 'image' => 'web.jpg'],
-            ['name' => 'Design Graphique', 'description' => 'Logos, affiches et identité visuelle', 'image' => 'design.jpg'],
-            ['name' => 'Mécanique', 'description' => 'Réparation et entretien de véhicules', 'image' => 'meca.jpg'],
-            ['name' => 'Plomberie', 'description' => 'Installation et dépannage de tuyauterie', 'image' => 'plomberie.jpg'],
-            ['name' => 'Électricité', 'description' => 'Travaux électriques et maintenance', 'image' => 'elec.jpg'],
+            ['name' => 'Développement Web', 'category' => 'Tech', 'description' => 'Création de sites et applications web', 'image' => 'web.jpg'],
+            ['name' => 'Design Graphique', 'category' => 'Design', 'description' => 'Logos, affiches et identité visuelle', 'image' => 'design.jpg'],
+            ['name' => 'Mécanique', 'category' => 'Manuel', 'description' => 'Réparation et entretien de véhicules', 'image' => 'meca.jpg'],
+            ['name' => 'Plomberie', 'category' => 'Manuel', 'description' => 'Installation et dépannage de tuyauterie', 'image' => 'plomberie.jpg'],
+            ['name' => 'Électricité', 'category' => 'Manuel', 'description' => 'Travaux électriques et maintenance', 'image' => 'elec.jpg'],
         ];
 
         foreach ($servicesData as $service) {

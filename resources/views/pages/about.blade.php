@@ -10,7 +10,6 @@
                     The platform that connects <br />
                     <span class="about-h1-gold">talent with opportunity</span>
                 </h1>
-                <p class="about-hero-sub">Ana</p>
                 <div class="about-hero-cta-row">
                     {{-- <a href="{{ route('sign') }}" class="about-btn-primary text-decoration-none">Get Started Free</a> --}}
                     <a href="#about-process" class="about-btn-ghost text-decoration-none">How It Works ↓</a>

@@ -59,4 +59,58 @@ class FrontendController extends Controller
             'providers' => $providers,
         ]);
     }
+
+    public function services(): View
+    {
+        $services = \App\Models\Service::with(['posts.user', 'users'])->get();
+        return view('pages.services', [
+            'services' => $services,
+        ]);
+    }
+
+    public function posts(): View
+    {
+        $posts = \App\Models\Post::with(['user', 'service'])->latest()->get();
+        return view('pages.posts', [
+            'posts' => $posts,
+        ]);
+    }
+
+    public function ajoutPost(): View
+    {
+        $services = \App\Models\Service::all();
+        return view('pages.ajout-post', [
+            'services' => $services,
+        ]);
+    }
+
+    public function storePost(Request $request): RedirectResponse
+    {
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'service_id' => ['nullable', 'exists:services,id'],
+            'description' => ['required', 'string'],
+            'image' => ['nullable', 'image', 'max:10240'],
+        ]);
+
+        // Use the user's own service_id (from form hidden field or their profile)
+        $serviceId = $validated['service_id'] ?? auth()->user()->service_id;
+
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('posts', 'public');
+        }
+
+        \App\Models\Post::create([
+            'user_id' => auth()->id(),
+            'service_id' => $serviceId,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'image' => $imagePath,
+        ]);
+
+        return redirect()
+            ->route('posts')
+            ->with('success', 'Post publié avec succès !');
+    }
 }

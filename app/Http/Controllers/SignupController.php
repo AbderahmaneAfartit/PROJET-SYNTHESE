@@ -15,7 +15,7 @@ class SignupController extends Controller
 {
     public function Showsigne(): View
     {
-        return view('pages.auth.signup');
+        return view('pages.auth.signup', ['posts' => \App\Models\Post::all()]);
     }
 
     public function register(Request $request): RedirectResponse
@@ -26,37 +26,35 @@ class SignupController extends Controller
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)],
             'travailleur' => ['nullable', 'boolean'],
-            'jobs' => ['nullable', 'array'],
-            'jobs.*' => ['nullable', 'string', 'max:255'],
+            'post_id' => ['nullable', 'exists:posts,id'],
+            'service_id' => ['nullable', 'exists:services,id'],
+            'contact' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'file', 'max:10240'],
         ]);
 
-        // Si le compte est travailleur, au moins un metier doit etre renseigne.
-        $jobs = collect($data['jobs'] ?? [])
-            ->map(fn ($job) => trim((string) $job))
-            ->filter()
-            ->unique()
-            ->values();
-
-        if ($request->boolean('travailleur') && $jobs->isEmpty()) {
-            return back()
-                ->withErrors(['jobs.0' => 'Ajoutez au moins un metier.'])
-                ->withInput();
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('profiles', 'public');
         }
 
-        $user = DB::transaction(function () use ($request, $data, $jobs) {
+        $user = DB::transaction(function () use ($request, $data, $imagePath) {
             // Creation de l'utilisateur dans la table users existante.
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => $data['password'],
                 'role' => $request->boolean('travailleur') ? 'manjob' : 'client',
+                'contact' => $data['contact'] ?? null,
+                'image' => $imagePath,
+                'service_id' => $request->boolean('travailleur') ? ($data['service_id'] ?? null) : null,
             ]);
 
-            // Creation des metiers dans client_jobs pour les comptes travailleurs.
-            foreach ($jobs as $job) {
+            // Si le compte est travailleur et un post est selectionné, créer le job.
+            if ($request->boolean('travailleur') && $request->filled('post_id')) {
+                $post = \App\Models\Post::find($request->post_id);
                 ClientJob::create([
                     'user_id' => $user->id,
-                    'title' => $job,
+                    'title' => $post->title,
                     'status' => 'open',
                 ]);
             }

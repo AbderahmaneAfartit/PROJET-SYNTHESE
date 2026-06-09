@@ -72,7 +72,7 @@
                         </div>
                     @endif
 
-                    <form class="login-form signup-form" method="{{ $signupMethod }}" action="{{ $signupAction }}" novalidate>
+                    <form class="login-form signup-form" method="POST" action="{{ $signupAction }}" enctype="multipart/form-data" novalidate>
                         @if ($hasSignupPost)
                             @csrf
                         @endif
@@ -113,6 +113,43 @@
                                 />
                             </div>
                             @error('email')
+                                <div class="login-error" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contact">Contact</label>
+                            <div class="input-wrapper">
+                                <span class="input-icon">C</span>
+                                <input
+                                    type="text"
+                                    id="contact"
+                                    name="contact"
+                                    placeholder="Your contact information"
+                                    value="{{ old('contact') }}"
+                                    class="@error('contact') is-invalid @enderror"
+                                />
+                            </div>
+                            @error('contact')
+                                <div class="login-error" role="alert">{{ $message }}</div>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="image">Profile Photo</label>
+                            <div class="d-flex align-items-center gap-3">
+                                <input
+                                    type="file"
+                                    id="image"
+                                    name="image"
+                                    class="form-control @error('image') is-invalid @enderror"
+                                    accept="image/*"
+                                />
+                                <div id="image-preview" style="width: 50px; height: 50px; border-radius: 50%; border: 1px solid #ccc; display: none; overflow: hidden;">
+                                    <img src="#" alt="Preview" style="width: 100%; height: 100%; object-fit: cover;" />
+                                </div>
+                            </div>
+                            @error('image')
                                 <div class="login-error" role="alert">{{ $message }}</div>
                             @enderror
                         </div>
@@ -165,35 +202,33 @@
                             </label>
 
                             <div class="signup-jobs">
-                                <div class="signup-jobs-header">
-                                    <span>Jobs to add</span>
+                                <div class="form-group mb-0">
+                                    <label for="post_id">Select Job Post</label>
+                                    <select name="post_id" id="post_id" class="form-control">
+                                        <option value="">Select a job post</option>
+                                        @foreach ($posts as $post)
+                                            <option value="{{ $post->id }}">{{ $post->title }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
+                                @error('post_id')
+                                    <div class="login-error" role="alert">{{ $message }}</div>
+                                @enderror
 
-                                <div class="signup-suggestions">
-                                    @foreach ($suggestedJobs as $job)
-                                        <span>{{ $job }}</span>
-                                    @endforeach
+                                <div class="form-group mb-0" style="margin-top: 12px;">
+                                    <label for="service_id">Your Service / Domain <span style="color: var(--gold, #c9a84c);">*</span></label>
+                                    <select name="service_id" id="service_id" class="form-control @error('service_id') is-invalid @enderror">
+                                        <option value="">Select your service...</option>
+                                        @foreach (\App\Models\Service::all() as $service)
+                                            <option value="{{ $service->id }}" @selected(old('service_id') == $service->id)>
+                                                {{ $service->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
                                 </div>
-
-                                @for ($i = 0; $i < 3; $i++)
-                                    <div class="form-group mb-0">
-                                        <label for="job-{{ $i + 1 }}">Job {{ $i + 1 }}</label>
-                                        <div class="input-wrapper">
-                                            <span class="input-icon">#</span>
-                                            <input
-                                                type="text"
-                                                id="job-{{ $i + 1 }}"
-                                                name="jobs[]"
-                                                placeholder="Example: Plumber"
-                                                value="{{ $selectedJobs->get($i) }}"
-                                                class="@error('jobs.' . $i) is-invalid @enderror"
-                                            />
-                                        </div>
-                                        @error('jobs.' . $i)
-                                            <div class="login-error" role="alert">{{ $message }}</div>
-                                        @enderror
-                                    </div>
-                                @endfor
+                                @error('service_id')
+                                    <div class="login-error" role="alert">{{ $message }}</div>
+                                @enderror
                             </div>
                         </div>
 
@@ -203,6 +238,18 @@
 
                         <button type="submit" class="login-submit-btn">Create account</button>
                     </form>
+
+                    <script>
+                        document.getElementById('image').addEventListener('change', function(e) {
+                            const preview = document.getElementById('image-preview');
+                            const reader = new FileReader();
+                            reader.onload = function() {
+                                preview.querySelector('img').src = reader.result;
+                                preview.style.display = 'block';
+                            }
+                            reader.readAsDataURL(e.target.files[0]);
+                        });
+                    </script>
                 </div>
             </div>
         </div>

@@ -12,6 +12,7 @@
                 <h5 class="footer-title">Explore</h5>
                 <ul class="footer-links">
                     <li><a href="{{ route('home') }}#services">Services</a></li>
+                    <li><a href="{{ route('posts') }}">Posts</a></li>
                     <li><a href="{{ route('providers') }}">Artisans</a></li>
                     <li><a href="{{ route('about') }}">About</a></li>
                     <li><a href="{{ route('contact') }}">Contact</a></li>

@@ -4,6 +4,8 @@
 @import './migrated/login.css';
 @import './migrated/signup.css';
 @import './migrated/navbar.css';
+@import './migrated/services.css';
+@import './migrated/posts.css';
 
 .hero-section {
     position: relative;

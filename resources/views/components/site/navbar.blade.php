@@ -27,10 +27,14 @@
                     Home
                 </a>
 
-                <a href="{{ request()->routeIs('home') ? '#services' : $homeUrl . '#services' }}" class="nav-link-custom">
+                <a href="{{ route('services') }}" class="nav-link-custom {{ request()->routeIs('services') ? 'active' : '' }}">
                     Services
                 </a>
-
+                @auth
+                <a href="{{ route('posts') }}" class="nav-link-custom {{ request()->routeIs('posts*') ? 'active' : '' }}">
+                    Posts
+                </a>
+                @endauth
                 <a href="{{ route('about') }}" class="nav-link-custom {{ $routeName === 'about' ? 'active' : '' }}">
                     About
                 </a>
@@ -39,14 +43,15 @@
                     Contact
                 </a>
 
-                <form class="search-container" role="search" action="{{ route('providers') }}" method="GET">
-                    <span class="search-icon" aria-hidden="true">Search</span>
-                    <input type="search" name="q" placeholder="Search services..." class="search-input" />
-                </form>
+
 
                 @auth
                     <div class="nav-user-card">
-                        <span class="nav-user-avatar" aria-hidden="true">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                        @if(auth()->user()->image)
+                            <img src="{{ asset('storage/' . auth()->user()->image) }}" alt="{{ auth()->user()->name }}" class="nav-user-avatar" style="width: 34px; height: 34px; border-radius: 50%; object-fit: cover;" />
+                        @else
+                            <span class="nav-user-avatar" aria-hidden="true">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                        @endif
                         <span class="nav-user-meta">
                             <strong>{{ auth()->user()->name }}</strong>
                             <span>{{ auth()->user()->role }}</span>
