@@ -31,7 +31,7 @@ class AuthSessionService
                 'name' => $data['name'],
                 'email' => $data['email'],
                 'password' => $data['password'],
-                'role' => $request->boolean('travailleur') ? 'ManJobs' : 'client',
+                'role' => $request->boolean('travailleur') ? 'manjob' : 'client',
             ]);
 
             if ($request->boolean('travailleur')) {

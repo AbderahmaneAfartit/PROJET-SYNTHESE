@@ -51,7 +51,7 @@ class FrontendController extends Controller
     public function providers(): View
     {
         $providers = User::query()
-            ->where('role', 'ManJobs')
+            ->where('role', 'manjob')
             ->with('clientJobs')
             ->get();
 

@@ -44,14 +44,28 @@
                     <input type="search" name="q" placeholder="Search services..." class="search-input" />
                 </form>
 
-                <div class="d-flex align-items-center gap-2 nav-auth-actions">
-                    <a href="{{ route('login') }}" class="login-btn text-decoration-none">
-                        Login
-                    </a>
-                    <a href="{{ route('sign') }}" class="signup-btn text-decoration-none">
-                        Sign Up
-                    </a>
-                </div>
+                @auth
+                    <div class="nav-user-card">
+                        <span class="nav-user-avatar" aria-hidden="true">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
+                        <span class="nav-user-meta">
+                            <strong>{{ auth()->user()->name }}</strong>
+                            <span>{{ auth()->user()->role }}</span>
+                        </span>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" aria-label="Logout">x</button>
+                        </form>
+                    </div>
+                @else
+                    <div class="d-flex align-items-center gap-2 nav-auth-actions">
+                        <a href="{{ route('login') }}" class="login-btn text-decoration-none">
+                            Login
+                        </a>
+                        <a href="{{ route('sign') }}" class="signup-btn text-decoration-none">
+                            Sign Up
+                        </a>
+                    </div>
+                @endauth
             </div>
         </div>
     </div>
