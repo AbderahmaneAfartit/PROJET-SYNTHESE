@@ -1,0 +1,109 @@
+.signup-page {
+  overflow: auto;
+}
+
+.signup-split-container {
+  max-width: 1080px;
+  min-height: 720px;
+}
+
+.signup-card {
+  max-width: 390px;
+}
+
+.login-error {
+  margin-top: 8px;
+  color: #f87171;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.signup-checkbox {
+  justify-content: flex-start;
+  gap: 10px;
+  color: var(--text-light);
+  font-weight: 700;
+}
+
+.signup-jobs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border-faint);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.signup-jobs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: var(--text-dim);
+  font-size: 0.8rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.signup-job-row button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border-faint);
+  border-radius: 8px;
+  background: var(--bg-input);
+  color: var(--emerald);
+  cursor: pointer;
+}
+
+.signup-job-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px;
+}
+
+.signup-job-row select,
+.signup-custom-job input {
+  min-width: 0;
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border-faint);
+  border-radius: 8px;
+  padding: 10px 12px;
+  color: var(--text-main);
+}
+
+.signup-job-row select:focus,
+.signup-custom-job input:focus {
+  outline: none;
+  border-color: var(--emerald);
+  box-shadow: 0 0 0 4px var(--emerald-glow);
+}
+
+.signup-job-row select option {
+  color: #111827;
+}
+
+.signup-selected-jobs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.signup-selected-jobs button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 100%;
+  border: 1px solid rgba(16, 185, 129, 0.28);
+  border-radius: 999px;
+  padding: 8px 10px;
+  background: rgba(16, 185, 129, 0.08);
+  color: var(--text-light);
+  font-size: 0.82rem;
+  font-weight: 700;
+  cursor: pointer;
+}
