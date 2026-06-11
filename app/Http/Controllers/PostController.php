@@ -3,83 +3,44 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\Service;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\View\View;
 
 class PostController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): View
     {
-        $posts = Post::with(['user', 'service'])->latest()->get();
-        return response()->json($posts);
+        return view('pages.posts', [
+            'posts' => Post::with(['user', 'service'])->latest()->get(),
+        ]);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+    public function create(): View
     {
-        // Check if user has manjob role
-        if (Auth::user()->role !== 'manjob') {
-            return response()->json(['message' => 'Unauthorized. Only manjobs can create posts.'], 403);
-        }
+        return view('pages.ajout-post', [
+            'services' => Service::all(),
+        ]);
+    }
 
+    public function store(Request $request): RedirectResponse
+    {
         $validated = $request->validate([
-            'service_id' => 'required|exists:services,id',
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'image' => 'nullable|string',
+            'title' => ['required', 'string', 'max:255'],
+            'service_id' => ['nullable', 'exists:services,id'],
+            'description' => ['required', 'string'],
+            'image' => ['nullable', 'image', 'max:10240'],
         ]);
 
-        $post = Auth::user()->posts()->create($validated);
-
-        return response()->json($post, 201);
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(Post $post)
-    {
-        return response()->json($post->load(['user', 'service']));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Post $post)
-    {
-        // Ensure user owns the post
-        if (Auth::id() !== $post->user_id) {
-            return response()->json(['message' => 'Unauthorized.'], 403);
-        }
-
-        $validated = $request->validate([
-            'service_id' => 'sometimes|required|exists:services,id',
-            'title' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
-            'image' => 'nullable|string',
+        Post::create([
+            'user_id' => auth()->id(),
+            'service_id' => $validated['service_id'] ?? auth()->user()->service_id,
+            'title' => $validated['title'],
+            'description' => $validated['description'],
+            'image' => $request->file('image')?->store('posts', 'public'),
         ]);
 
-        $post->update($validated);
-
-        return response()->json($post);
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Post $post)
-    {
-        if (Auth::id() !== $post->user_id && Auth::user()->role !== 'admin') {
-            return response()->json(['message' => 'Unauthorized.'], 403);
-        }
-
-        $post->delete();
-
-        return response()->json(null, 204);
+        return to_route('posts')->with('success', 'Post publie avec succes !');
     }
 }

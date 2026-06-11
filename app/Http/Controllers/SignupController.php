@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClientJob;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -13,14 +14,15 @@ use Illuminate\View\View;
 
 class SignupController extends Controller
 {
-    public function Showsigne(): View
+    public function create(): View
     {
-        return view('pages.auth.signup', ['posts' => \App\Models\Post::all()]);
+        return view('pages.auth.signup', [
+            'posts' => Post::all(),
+        ]);
     }
 
     public function register(Request $request): RedirectResponse
     {
-        // Validation des informations principales du nouveau compte.
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
@@ -32,13 +34,9 @@ class SignupController extends Controller
             'image' => ['nullable', 'file', 'max:10240'],
         ]);
 
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('profiles', 'public');
-        }
+        $imagePath = $request->file('image')?->store('profiles', 'public');
 
         $user = DB::transaction(function () use ($request, $data, $imagePath) {
-            // Creation de l'utilisateur dans la table users existante.
             $user = User::create([
                 'name' => $data['name'],
                 'email' => $data['email'],
@@ -49,9 +47,9 @@ class SignupController extends Controller
                 'service_id' => $request->boolean('travailleur') ? ($data['service_id'] ?? null) : null,
             ]);
 
-            // Si le compte est travailleur et un post est selectionné, créer le job.
             if ($request->boolean('travailleur') && $request->filled('post_id')) {
-                $post = \App\Models\Post::find($request->post_id);
+                $post = Post::find($request->post_id);
+
                 ClientJob::create([
                     'user_id' => $user->id,
                     'title' => $post->title,
@@ -62,12 +60,9 @@ class SignupController extends Controller
             return $user;
         });
 
-        // Connexion automatique apres inscription.
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()
-            ->route('home')
-            ->with('success', 'Compte cree avec succes.');
+        return to_route('home')->with('success', 'Compte cree avec succes.');
     }
 }
