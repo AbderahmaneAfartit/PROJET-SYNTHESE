@@ -29,18 +29,20 @@
                         Connect with top-tier professionals for any project — fast, reliable, guaranteed.
                     </p>
 
-                    <div class="hero-search-bar">
+                    <form class="hero-search-bar" action="{{ route('services') }}" method="GET" id="hero-service-search">
                         <svg class="hero-search-icon" viewBox="0 0 20 20" fill="none">
                             <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.8"></circle>
                             <path d="M13 13l3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
                         </svg>
                         <input
                             type="text"
+                            name="q"
+                            id="hero-service-search-input"
                             placeholder="What service are you looking for?"
                             class="hero-search-input"
                         />
-                        <button class="hero-search-btn" type="button">Search</button>
-                    </div>
+                        <button class="hero-search-btn" type="submit">Search</button>
+                    </form>
 
                     <div class="hero-pills">
                         <span class="hero-pills-label">Popular:</span>
@@ -48,6 +50,7 @@
                             <button
                                 type="button"
                                 class="hero-pill"
+                                data-service-search="{{ $category }}"
                             >
                                 {{ $category }}
                             </button>
@@ -79,7 +82,10 @@
 
                     <div class="services-grid">
                         @foreach ($services as $service)
-                            <div class="service-card">
+                            <a
+                                href="{{ route('services', ['category' => $service['filter']]) }}"
+                                class="service-card service-category-link"
+                            >
                                 <div
                                     class="service-icon-wrap"
                                     style="background: {{ $service['color'] }}18; border: 1px solid {{ $service['color'] }}30;"
@@ -93,7 +99,7 @@
                                     class="service-card-bar"
                                     style="background: linear-gradient(90deg, {{ $service['color'] }}80, transparent);"
                                 ></div>
-                            </div>
+                            </a>
                         @endforeach
                     </div>
                 </div>
@@ -153,4 +159,19 @@
             </section>
         </div>
     </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchForm = document.getElementById('hero-service-search');
+            const searchInput = document.getElementById('hero-service-search-input');
+            const popularButtons = document.querySelectorAll('[data-service-search]');
+
+            popularButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    searchInput.value = button.dataset.serviceSearch || '';
+                    searchForm.requestSubmit();
+                });
+            });
+        });
+    </script>
 </x-layouts.app>

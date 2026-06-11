@@ -3,10 +3,128 @@
 namespace App\Services;
 
 use App\Models\ClientJob;
+use App\Models\Service;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 class FrontendContentService
 {
     public function home(): array
+    {
+        $allServices = Schema::hasTable('services')
+            ? Service::query()
+                ->select('name', 'category', 'description')
+                ->orderBy('category')
+                ->orderBy('name')
+                ->get()
+            : collect();
+
+        $heroCategories = $allServices
+            ->pluck('name')
+            ->filter()
+            ->unique()
+            ->take(6)
+            ->values()
+            ->all();
+
+        if ($heroCategories === []) {
+            $heroCategories = [
+                'Logo Design',
+                'Web Development',
+                'Video Editing',
+                'Writing & Translation',
+                'Social Media',
+                'SEO',
+            ];
+        }
+
+        $services = $allServices
+            ->groupBy(fn ($service) => filled($service->category) ? $service->category : 'General Services')
+            ->map(function ($categoryServices, $category) {
+                return [
+                    'icon' => $this->categoryIcon($category),
+                    'title' => $category,
+                    'description' => $categoryServices
+                        ->pluck('name')
+                        ->filter()
+                        ->take(4)
+                        ->implode(', '),
+                    'count' => $categoryServices->count() . '+ services',
+                    'color' => $this->categoryColor($category),
+                    'filter' => Str::slug($category),
+                ];
+            })
+            ->values()
+            ->all();
+
+        if ($services === []) {
+            $services = [
+                [
+                    'icon' => '🎨',
+                    'title' => 'Design & Creative',
+                    'description' => 'Logos, branding, illustrations, UI/UX',
+                    'count' => '3.2K+ services',
+                    'color' => '#f59e0b',
+                    'filter' => 'design-creative',
+                ],
+                [
+                    'icon' => '💻',
+                    'title' => 'Web Development',
+                    'description' => 'Frontend, backend, full-stack, CMS',
+                    'count' => '5.8K+ services',
+                    'color' => '#3b82f6',
+                    'filter' => 'web-development',
+                ],
+                [
+                    'icon' => '📝',
+                    'title' => 'Writing & Content',
+                    'description' => 'Copywriting, SEO, blogs, translation',
+                    'count' => '4.1K+ services',
+                    'color' => '#10b981',
+                    'filter' => 'writing-content',
+                ],
+            ];
+        }
+
+        return [
+            'heroCategories' => $heroCategories,
+            'heroStats' => [
+                ['value' => '25K+', 'label' => 'Freelancers'],
+                ['value' => '98%', 'label' => 'Satisfaction Rate'],
+                ['value' => '150K+', 'label' => 'Projects Done'],
+                ['value' => '24/7', 'label' => 'Support'],
+            ],
+            'services' => $services,
+            'howItWorksSteps' => [
+                [
+                    'number' => '01',
+                    'title' => 'Post Your Project',
+                    'description' => "Describe what you need - budget, timeline, and requirements. It's free to post.",
+                    'icon' => '📋',
+                ],
+                [
+                    'number' => '02',
+                    'title' => 'Review Proposals',
+                    'description' => 'Talented freelancers reach out within hours. Browse profiles, portfolios, and reviews.',
+                    'icon' => '🔍',
+                ],
+                [
+                    'number' => '03',
+                    'title' => 'Hire & Collaborate',
+                    'description' => 'Choose the best fit, share files, and communicate - all on the platform.',
+                    'icon' => '🤝',
+                ],
+                [
+                    'number' => '04',
+                    'title' => 'Pay Securely',
+                    'description' => 'Funds are held safely and released only when you approve the finished work.',
+                    'icon' => '🔒',
+                ],
+            ],
+        ];
+    }
+
+    private function legacyHome(): array
     {
         return [
             'heroCategories' => [
@@ -94,6 +212,27 @@ class FrontendContentService
                 ],
             ],
         ];
+    }
+
+    private function categoryIcon(string $category): string
+    {
+        $normalized = Str::lower($category);
+
+        return match (true) {
+            str_contains($normalized, 'tech'), str_contains($normalized, 'web'), str_contains($normalized, 'develop') => '💻',
+            str_contains($normalized, 'design'), str_contains($normalized, 'creative') => '🎨',
+            str_contains($normalized, 'manuel'), str_contains($normalized, 'repair'), str_contains($normalized, 'meca') => '🛠',
+            str_contains($normalized, 'writing'), str_contains($normalized, 'content') => '📝',
+            str_contains($normalized, 'marketing'), str_contains($normalized, 'social') => '📣',
+            default => '✨',
+        };
+    }
+
+    private function categoryColor(string $category): string
+    {
+        $colors = ['#f59e0b', '#3b82f6', '#10b981', '#ef4444', '#8b5cf6', '#ec4899'];
+
+        return $colors[crc32($category) % count($colors)];
     }
 
     public function about(): array

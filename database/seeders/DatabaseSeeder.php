@@ -20,20 +20,22 @@ class DatabaseSeeder extends Seeder
     {
         $password = Hash::make('password');
 
-        // Seed Services
+        // Seed Services as requested
         $servicesData = [
-            ['name' => 'Développement Web', 'category' => 'Tech', 'description' => 'Création de sites et applications web', 'image' => 'web.jpg'],
-            ['name' => 'Design Graphique', 'category' => 'Design', 'description' => 'Logos, affiches et identité visuelle', 'image' => 'design.jpg'],
-            ['name' => 'Mécanique', 'category' => 'Manuel', 'description' => 'Réparation et entretien de véhicules', 'image' => 'meca.jpg'],
-            ['name' => 'Plomberie', 'category' => 'Manuel', 'description' => 'Installation et dépannage de tuyauterie', 'image' => 'plomberie.jpg'],
-            ['name' => 'Électricité', 'category' => 'Manuel', 'description' => 'Travaux électriques et maintenance', 'image' => 'elec.jpg'],
+            ['name' => 'Logo Design', 'category' => 'Design', 'description' => 'Professional logo design and brand identity.', 'image' => 'logo_design.jpg'],
+            ['name' => 'Web Development', 'category' => 'Tech', 'description' => 'Building responsive and modern websites.', 'image' => 'web_dev.jpg'],
+            ['name' => 'Video Editing', 'category' => 'Multimedia', 'description' => 'High-quality video editing and post-production.', 'image' => 'video_editing.jpg'],
+            ['name' => 'Writing & Translation', 'category' => 'Content', 'description' => 'Content writing and professional translation services.', 'image' => 'writing.jpg'],
+            ['name' => 'Social Media', 'category' => 'Marketing', 'description' => 'Social media management and strategy.', 'image' => 'social_media.jpg'],
+            ['name' => 'SEO', 'category' => 'Marketing', 'description' => 'Search engine optimization to improve visibility.', 'image' => 'seo.jpg'],
         ];
 
         foreach ($servicesData as $service) {
             Service::updateOrCreate(['name' => $service['name']], $service);
         }
 
-        $webService = Service::where('name', 'Développement Web')->first();
+        $webService = Service::where('name', 'Web Development')->first();
+        $designService = Service::where('name', 'Logo Design')->first();
 
         // Seed Users
         User::updateOrCreate(
@@ -46,7 +48,7 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        User::updateOrCreate(
+        $clientUser = User::updateOrCreate(
             ['email' => 'client@example.com'],
             [
                 'name' => 'Client User',
@@ -68,14 +70,41 @@ class DatabaseSeeder extends Seeder
             ],
         );
 
-        // Seed some Posts
-        Post::updateOrCreate(
-            ['title' => 'Développement de site E-commerce'],
+        // Seed Posts
+        \App\Models\Post::updateOrCreate(
+            ['title' => 'E-commerce Website Development'],
             [
                 'user_id' => $manjobUser->id,
                 'service_id' => $webService->id,
-                'description' => 'Je propose mes services pour créer votre boutique en ligne avec Laravel.',
-                'image' => 'ecommerce.jpg'
+                'description' => 'Expert web development services for your e-commerce business.',
+                'image' => 'posts/web_dev_sample.jpg'
+            ]
+        );
+
+        \App\Models\Post::updateOrCreate(
+            ['title' => 'Modern Logo Design'],
+            [
+                'user_id' => $manjobUser->id,
+                'service_id' => $designService->id,
+                'description' => 'Creating modern and impactful logos for startups.',
+                'image' => 'posts/logo_design_sample.jpg'
+            ]
+        );
+
+        // Seed Client Jobs
+        \App\Models\ClientJob::updateOrCreate(
+            ['title' => 'Need a professional logo for my blog'],
+            [
+                'user_id' => $clientUser->id,
+                'status' => 'open',
+            ]
+        );
+
+        \App\Models\ClientJob::updateOrCreate(
+            ['title' => 'Looking for a Laravel developer'],
+            [
+                'user_id' => $clientUser->id,
+                'status' => 'open',
             ]
         );
     }

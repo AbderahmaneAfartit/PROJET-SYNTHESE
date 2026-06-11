@@ -18,13 +18,40 @@
 
         @php
             $categories = $services->pluck('category')->unique()->values();
+            $activeCategory = request('category', 'all');
+            $searchQuery = request('q', '');
         @endphp
+
+        <div class="services-search-wrap">
+            <form class="services-search-bar" id="services-search-form">
+                <svg class="services-search-icon" viewBox="0 0 20 20" fill="none">
+                    <circle cx="8.5" cy="8.5" r="5.5" stroke="currentColor" stroke-width="1.8"></circle>
+                    <path d="M13 13l3.5 3.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                </svg>
+                <input
+                    type="search"
+                    class="services-search-input"
+                    id="services-search-input"
+                    value="{{ $searchQuery }}"
+                    placeholder="Search by service, category, or keyword"
+                    autocomplete="off"
+                />
+            </form>
+        </div>
 
         <!-- Filter Buttons -->
         <div class="services-filter-container">
-            <button class="filter-btn active" data-filter="all">All</button>
+            <button class="filter-btn {{ $activeCategory === 'all' ? 'active' : '' }}" data-filter="all">All</button>
             @foreach ($categories as $category)
-                <button class="filter-btn" data-filter="{{ Str::slug($category) }}">{{ $category }}</button>
+                @php
+                    $categorySlug = Str::slug($category);
+                @endphp
+                <button
+                    class="filter-btn {{ $activeCategory === $categorySlug ? 'active' : '' }}"
+                    data-filter="{{ $categorySlug }}"
+                >
+                    {{ $category }}
+                </button>
             @endforeach
         </div>
 
@@ -46,7 +73,11 @@
                         };
                     @endphp
 
-                    <div class="service-card fade-in" data-category="{{ $categorySlug }}">
+                    <div
+                        class="service-card fade-in"
+                        data-category="{{ $categorySlug }}"
+                        data-search="{{ Str::lower($service->name . ' ' . $service->category . ' ' . $service->description) }}"
+                    >
                         <div class="service-card-img-wrapper">
                             <img src="{{ $imageUrl }}" alt="{{ $service->name }}" class="service-card-img" />
                             <span class="service-card-category">{{ $service->category }}</span>
@@ -88,6 +119,11 @@
                     </div>
                 @endforelse
             </div>
+
+            <div class="services-no-results" id="services-no-results" hidden>
+                <h3>No services match your search.</h3>
+                <p>Try another keyword or choose a different category.</p>
+            </div>
         </div>
     </div>
 
@@ -96,28 +132,83 @@
         document.addEventListener('DOMContentLoaded', function() {
             const buttons = document.querySelectorAll('.filter-btn');
             const cards = document.querySelectorAll('.service-card');
+            const searchForm = document.getElementById('services-search-form');
+            const searchInput = document.getElementById('services-search-input');
+            const noResults = document.getElementById('services-no-results');
+            const params = new URLSearchParams(window.location.search);
+            let activeFilter = params.get('category') || 'all';
+
+            const normalize = (value) => (value || '').toString().trim().toLowerCase();
+
+            function updateUrl() {
+                const nextParams = new URLSearchParams();
+                const query = searchInput.value.trim();
+
+                if (query) {
+                    nextParams.set('q', query);
+                }
+
+                if (activeFilter !== 'all') {
+                    nextParams.set('category', activeFilter);
+                }
+
+                const nextUrl = nextParams.toString()
+                    ? `${window.location.pathname}?${nextParams.toString()}`
+                    : window.location.pathname;
+
+                window.history.replaceState({}, '', nextUrl);
+            }
+
+            function applyFilters() {
+                const query = normalize(searchInput.value);
+                let visibleCount = 0;
+
+                buttons.forEach((button) => {
+                    button.classList.toggle('active', button.getAttribute('data-filter') === activeFilter);
+                });
+
+                cards.forEach(card => {
+                    const category = card.getAttribute('data-category');
+                    const searchText = normalize(card.getAttribute('data-search'));
+                    const matchesCategory = activeFilter === 'all' || category === activeFilter;
+                    const matchesSearch = query === '' || searchText.includes(query);
+
+                    if (matchesCategory && matchesSearch) {
+                        card.classList.remove('fade-out');
+                        card.classList.add('fade-in');
+                        visibleCount++;
+                    } else {
+                        card.classList.remove('fade-in');
+                        card.classList.add('fade-out');
+                    }
+                });
+
+                if (noResults) {
+                    noResults.hidden = visibleCount > 0;
+                }
+
+                updateUrl();
+            }
+
+            if (!document.querySelector(`.filter-btn[data-filter="${activeFilter}"]`)) {
+                activeFilter = 'all';
+            }
 
             buttons.forEach(btn => {
                 btn.addEventListener('click', () => {
-                    // Remove active class from all buttons
-                    buttons.forEach(b => b.classList.remove('active'));
-                    // Add active class to clicked button
-                    btn.classList.add('active');
-
-                    const filter = btn.getAttribute('data-filter');
-
-                    cards.forEach(card => {
-                        const category = card.getAttribute('data-category');
-                        if (filter === 'all' || category === filter) {
-                            card.classList.remove('fade-out');
-                            card.classList.add('fade-in');
-                        } else {
-                            card.classList.remove('fade-in');
-                            card.classList.add('fade-out');
-                        }
-                    });
+                    activeFilter = btn.getAttribute('data-filter');
+                    applyFilters();
                 });
             });
+
+            searchInput.addEventListener('input', applyFilters);
+
+            searchForm.addEventListener('submit', (event) => {
+                event.preventDefault();
+                applyFilters();
+            });
+
+            applyFilters();
         });
     </script>
 </x-layouts.app>

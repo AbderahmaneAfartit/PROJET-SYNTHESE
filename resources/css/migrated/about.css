@@ -560,6 +560,22 @@
   color: var(--text-muted);
   line-height: 1.65;
 }
+.value-detail-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+}
+.value-detail-list span {
+  color: var(--emerald);
+  background: var(--emerald-faint);
+  border: 1px solid var(--emerald-glow);
+  border-radius: 999px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
 
 /* ─── CTA BANNER ─────────────────────────────── */
 .about-cta-section {

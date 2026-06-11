@@ -146,11 +146,23 @@
                     <h2 class="about-h2">What drives us every day</h2>
                 </div>
                 <div class="values-grid">
+                    @php
+                        $valueDetails = [
+                            ['Open access', 'Fair opportunities', 'Local and remote work'],
+                            ['Verified profiles', 'Clear communication', 'Safer collaboration'],
+                            ['Faster matching', 'Service growth', 'Better client experience'],
+                        ];
+                    @endphp
                     @foreach ($teamValues as $index => $value)
                         <div class="value-card" style="animation-delay: {{ $index * 0.1 }}s;">
                             <div class="value-icon">{{ $value['icon'] }}</div>
                             <h3 class="value-title">{{ $value['title'] }}</h3>
                             <p class="value-desc">{{ $value['desc'] }}</p>
+                            <div class="value-detail-list">
+                                @foreach ($valueDetails[$index] ?? [] as $detail)
+                                    <span>{{ $detail }}</span>
+                                @endforeach
+                            </div>
                         </div>
                     @endforeach
                 </div>
@@ -162,8 +174,12 @@
                 <h2 class="about-cta-title">Ready to get started?</h2>
                 <p class="about-cta-sub">Join 85,000+ clients who trust Freelance-Job to get quality work done.</p>
                 <div class="about-hero-cta-row justify-content-center">
-                    <a href="{{ route('sign') }}" class="about-btn-primary text-decoration-none">Post a Job Free</a>
-                    <a href="{{ route('providers') }}" class="about-btn-ghost text-decoration-none">Browse Freelancers →</a>
+                    @auth
+                        @if(in_array(auth()->user()->role, ['admin', 'manjob']))
+                            <a href="{{ route('posts.create') }}" class="about-btn-primary text-decoration-none">Add Your Job</a>
+                        @endif
+                    @endauth
+                    <a href="{{ route('services') }}" class="about-btn-ghost text-decoration-none">Browse Services -></a>
                 </div>
             </div>
         </section>
