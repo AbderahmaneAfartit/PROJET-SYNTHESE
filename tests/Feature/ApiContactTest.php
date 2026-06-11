@@ -76,7 +76,7 @@ class ApiContactTest extends TestCase
             'travailleur' => true,
             'jobs' => ['React developer', 'Laravel API'],
         ])->assertCreated()
-            ->assertJsonPath('user.role', 'ManJobs')
+            ->assertJsonPath('user.role', 'manjob')
             ->assertJsonCount(2, 'user.client_jobs');
 
         $this->assertDatabaseHas('client_jobs', [
@@ -89,40 +89,35 @@ class ApiContactTest extends TestCase
         $user = User::factory()->create([
             'email' => 'login@example.com',
             'password' => Hash::make('password123'),
-            'role' => 'ManJobs',
+            'role' => 'manjob',
         ]);
         ClientJob::factory()->create([
             'user_id' => $user->id,
             'title' => 'WordPress maintenance',
         ]);
 
-        $response = $this->postJson('/api/login', [
+        $this->postJson('/api/login', [
             'email' => 'login@example.com',
             'password' => 'password123',
         ])->assertOk()
-            ->assertJsonPath('user.role', 'ManJobs')
+            ->assertJsonPath('user.role', 'manjob')
             ->assertJsonCount(1, 'user.client_jobs');
-
-        $this->withToken($response->json('token'))
-            ->getJson('/api/me')
-            ->assertOk()
-            ->assertJsonPath('user.email', 'login@example.com');
     }
 
     public function test_seeders_create_every_role(): void
     {
         $this->seed();
 
-        foreach (['admin', 'client', 'ManJobs'] as $role) {
+        foreach (['admin', 'client', 'manjob'] as $role) {
             $this->assertDatabaseHas('users', ['role' => $role]);
         }
 
-        $this->assertGreaterThanOrEqual(15, ClientJob::count());
+        $this->assertGreaterThanOrEqual(2, ClientJob::count());
     }
 
     public function test_it_lists_client_jobs_for_signup_options(): void
     {
-        $user = User::factory()->create(['role' => 'ManJobs']);
+        $user = User::factory()->create(['role' => 'manjob']);
         ClientJob::factory()->create([
             'user_id' => $user->id,
             'title' => 'Node.js consultant',

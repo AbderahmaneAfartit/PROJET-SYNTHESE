@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\ClientJob;
 use App\Models\Service;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
@@ -112,96 +111,6 @@ class FrontendContentService
                     'number' => '03',
                     'title' => 'Hire & Collaborate',
                     'description' => 'Choose the best fit, share files, and communicate - all on the platform.',
-                    'icon' => '🤝',
-                ],
-                [
-                    'number' => '04',
-                    'title' => 'Pay Securely',
-                    'description' => 'Funds are held safely and released only when you approve the finished work.',
-                    'icon' => '🔒',
-                ],
-            ],
-        ];
-    }
-
-    private function legacyHome(): array
-    {
-        return [
-            'heroCategories' => [
-                'Logo Design',
-                'Web Development',
-                'Video Editing',
-                'Writing & Translation',
-                'Social Media',
-                'SEO',
-            ],
-            'heroStats' => [
-                ['value' => '25K+', 'label' => 'Freelancers'],
-                ['value' => '98%', 'label' => 'Satisfaction Rate'],
-                ['value' => '150K+', 'label' => 'Projects Done'],
-                ['value' => '24/7', 'label' => 'Support'],
-            ],
-            'services' => [
-                [
-                    'icon' => '🎨',
-                    'title' => 'Design & Creative',
-                    'description' => 'Logos, branding, illustrations, UI/UX',
-                    'count' => '3.2K+ services',
-                    'color' => '#f59e0b',
-                ],
-                [
-                    'icon' => '💻',
-                    'title' => 'Web Development',
-                    'description' => 'Frontend, backend, full-stack, CMS',
-                    'count' => '5.8K+ services',
-                    'color' => '#3b82f6',
-                ],
-                [
-                    'icon' => '📝',
-                    'title' => 'Writing & Content',
-                    'description' => 'Copywriting, SEO, blogs, translation',
-                    'count' => '4.1K+ services',
-                    'color' => '#10b981',
-                ],
-                [
-                    'icon' => '🎬',
-                    'title' => 'Video & Animation',
-                    'description' => 'Editing, motion graphics, explainers',
-                    'count' => '2.4K+ services',
-                    'color' => '#ef4444',
-                ],
-                [
-                    'icon' => '📣',
-                    'title' => 'Digital Marketing',
-                    'description' => 'Social media, ads, email, analytics',
-                    'count' => '3.7K+ services',
-                    'color' => '#8b5cf6',
-                ],
-                [
-                    'icon' => '🎵',
-                    'title' => 'Music & Audio',
-                    'description' => 'Voice overs, mixing, sound design',
-                    'count' => '1.9K+ services',
-                    'color' => '#ec4899',
-                ],
-            ],
-            'howItWorksSteps' => [
-                [
-                    'number' => '01',
-                    'title' => 'Post Your Project',
-                    'description' => "Describe what you need — budget, timeline, and requirements. It's free to post.",
-                    'icon' => '📋',
-                ],
-                [
-                    'number' => '02',
-                    'title' => 'Review Proposals',
-                    'description' => 'Talented freelancers reach out within hours. Browse profiles, portfolios, and reviews.',
-                    'icon' => '🔍',
-                ],
-                [
-                    'number' => '03',
-                    'title' => 'Hire & Collaborate',
-                    'description' => 'Choose the best fit, share files, and communicate — all on the platform.',
                     'icon' => '🤝',
                 ],
                 [
@@ -370,27 +279,4 @@ class FrontendContentService
         ];
     }
 
-    public function signup(): array
-    {
-        $fallbackJobs = [
-            'Laravel backend developer',
-            'React landing page',
-            'Logo redesign',
-            'WordPress website setup',
-            'SEO content writer',
-        ];
-
-        $availableJobs = ClientJob::query()
-            ->select('title')
-            ->distinct()
-            ->orderBy('title')
-            ->pluck('title')
-            ->filter()
-            ->values()
-            ->all();
-
-        return [
-            'availableJobs' => $availableJobs !== [] ? $availableJobs : $fallbackJobs,
-        ];
-    }
 }
