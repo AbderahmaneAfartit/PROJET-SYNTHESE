@@ -8,6 +8,7 @@ class ContactMessageService
 {
     public function store(array $data): void
     {
-        Log::info('New contact message', $data);
+        // Log::info('New contact message', $data);
+        file_put_contents(storage_path('app/messages.txt'), json_encode($data) . "\n", FILE_APPEND);
     }
 }

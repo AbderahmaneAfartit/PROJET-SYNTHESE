@@ -49,7 +49,7 @@
                         <div class="info-card-icon">📬</div>
                         <div>
                             <div class="info-card-title">Email direct</div>
-                            <div class="info-card-val">support@freelance-job.com</div>
+                            <div class="info-card-val">afartitabdo@freelance-job.com</div>
                         </div>
                     </div>
                     <div class="info-card" style="animation-delay: 0.1s">

@@ -27,11 +27,11 @@
                     Home
                 </a>
 
-                <a href="{{ route('services') }}" class="nav-link-custom {{ request()->routeIs('services') ? 'active' : '' }}">
+                <a href="{{ route('services') }}" class="nav-link-custom {{ $routeName === 'services' ? 'active' : '' }} }}">
                     Services
                 </a>
                 @auth
-                <a href="{{ route('posts') }}" class="nav-link-custom {{ request()->routeIs('posts*') ? 'active' : '' }}">
+                <a href="{{ route('posts') }}" class="nav-link-custom {{ $routeName === 'posts' ? 'active' : '' }} }}">
                     Posts
                 </a>
                 @endauth
